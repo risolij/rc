@@ -1,0 +1,10 @@
+* rc
+Attempt to reimplement another coreutil =wc= for practice
+
+#+begin_src sh
+wc -l flake.nix
+#+end_src
+
+#+begin_example
+40 flake.nix
+#+end_example
