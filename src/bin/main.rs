@@ -5,7 +5,12 @@ use std::fs;
 fn main() -> Result<(), ReadFileError> {
     let file = argument_handling();
 
-    println!("{}", file.line_count().word_count().character_count());
+    println!("{}", 
+        file
+        .split(30)
+        .line_count()
+        .word_count()
+        .character_count());
 
     Ok(())
 }

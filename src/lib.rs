@@ -38,9 +38,7 @@ impl ReadFile {
             .sum();
 
         self
-    }
-
-    pub fn line_count(mut self) -> Self {
+    } pub fn line_count(mut self) -> Self {
         self.line_count = self.file.lines().count();
 
         self
@@ -51,6 +49,11 @@ impl ReadFile {
 
         self
     }
+
+    pub fn split(mut self, value: usize) -> Self {
+        self.file = format!("{}{}", self.file.lines().take(value).collect::<Vec<&str>>().join("\n"), '\n');
+        self
+    }
 }
 
 impl fmt::Display for ReadFile {
@@ -58,7 +61,7 @@ impl fmt::Display for ReadFile {
         write!(
             f,
             "Line Count: {}\nWord Count: {}\nCharacter Count: {}",
-            self.line_count, self.word_count, self.character_count
+            self.line_count, self.word_count, self.character_count 
         )
     }
 }
@@ -72,6 +75,11 @@ mod tests {
         let test = file.line_count().word_count().character_count();
         let v = vec![test.line_count, test.word_count, test.character_count];
 
+        let file2 = ReadFile::new(std::fs::read_to_string("flake.nix").unwrap());
+        let test2 = file2.split(30).line_count().word_count().character_count();
+        let v2 = vec![test2.line_count, test2.word_count, test2.character_count];
+
         assert_eq!(vec![40, 85, 964], v);
+        assert_eq!(vec![30, 70, 746], v2);
     }
 }
