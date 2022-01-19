@@ -6,7 +6,7 @@ use rc::{ReadFile, ReadFileError};
 fn main() -> Result<(), ReadFileError> {
     let file = argument_handling();
 
-    println!("{}", file.line_count().word_count());
+    println!("{}", file.line_count().word_count().character_count());
 
     Ok(())
 }

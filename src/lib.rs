@@ -17,6 +17,7 @@ pub struct ReadFile {
     file: String,
     line_count: usize,
     word_count: usize,
+    character_count: usize,
 }
 
 impl ReadFile {
@@ -25,6 +26,7 @@ impl ReadFile {
             file,
             line_count: 0,
             word_count: 0,
+            character_count: 0,
         }
     }
 
@@ -43,14 +45,37 @@ impl ReadFile {
 
         self
     }
+
+    pub fn character_count(mut self) -> Self {
+        self.character_count = self
+            .file
+            .chars()
+            .count();
+
+        self
+    }
 }
 
 impl fmt::Display for ReadFile {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
-            "Line Count: {}\nWord Count: {}",
-            self.line_count, self.word_count
+            "Line Count: {}\nWord Count: {}\nCharacter Count: {}",
+            self.line_count, self.word_count, self.character_count
         )
+    }
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn counts() {
+        let file = ReadFile::new(std::fs::read_to_string("flake.nix").unwrap());
+        let test = file.line_count().word_count().character_count();
+        let v = vec![test.line_count, test.word_count, test.character_count];
+
+        assert_eq!(vec![40, 85, 964], v);
     }
 }
