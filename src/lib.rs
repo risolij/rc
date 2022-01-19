@@ -18,6 +18,7 @@ pub struct ReadFile {
     line_count: usize,
     word_count: usize,
     character_count: usize,
+    byte_count: usize,
 }
 
 impl ReadFile {
@@ -27,6 +28,7 @@ impl ReadFile {
             line_count: 0,
             word_count: 0,
             character_count: 0,
+            byte_count: 0,
         }
     }
 
@@ -42,6 +44,11 @@ impl ReadFile {
     pub fn line_count(mut self) -> Self {
         self.line_count = self.file.lines().count();
 
+        self
+    }
+
+    pub fn byte_count(mut self) -> Self {
+        self.byte_count = self.file.as_bytes().len();
         self
     }
 
@@ -69,8 +76,8 @@ impl fmt::Display for ReadFile {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
-            "Line Count: {}\nWord Count: {}\nCharacter Count: {}",
-            self.line_count, self.word_count, self.character_count
+            "Line Count: {}\nWord Count: {}\nCharacter Count: {}\nByte Count: {}",
+            self.line_count, self.word_count, self.character_count, self.byte_count
         )
     }
 }
