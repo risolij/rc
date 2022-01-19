@@ -6,16 +6,13 @@ fn main() -> Result<(), ReadFileError> {
     let args = argument_handling();
     let file = create_readfile(args);
 
-    println!("{}", 
-        file
-        .split(30)
-        .line_count()
-        .word_count()
-        .character_count());
+    println!(
+        "{}",
+        file.split(30).line_count().word_count().character_count()
+    );
 
     Ok(())
 }
-
 
 fn create_readfile(args: Vec<String>) -> ReadFile {
     match fs::read_to_string(args[1].clone()) {
@@ -32,7 +29,6 @@ fn argument_handling() -> Vec<String> {
     is_enough_arguments(args.len());
 
     args
-
 }
 
 fn is_enough_arguments(number: usize) {

@@ -38,7 +38,8 @@ impl ReadFile {
             .sum();
 
         self
-    } pub fn line_count(mut self) -> Self {
+    }
+    pub fn line_count(mut self) -> Self {
         self.line_count = self.file.lines().count();
 
         self
@@ -51,7 +52,15 @@ impl ReadFile {
     }
 
     pub fn split(mut self, value: usize) -> Self {
-        self.file = format!("{}{}", self.file.lines().take(value).collect::<Vec<&str>>().join("\n"), '\n');
+        self.file = format!(
+            "{}{}",
+            self.file
+                .lines()
+                .take(value)
+                .collect::<Vec<&str>>()
+                .join("\n"),
+            '\n'
+        );
         self
     }
 }
@@ -61,7 +70,7 @@ impl fmt::Display for ReadFile {
         write!(
             f,
             "Line Count: {}\nWord Count: {}\nCharacter Count: {}",
-            self.line_count, self.word_count, self.character_count 
+            self.line_count, self.word_count, self.character_count
         )
     }
 }
