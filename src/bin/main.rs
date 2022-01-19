@@ -8,7 +8,11 @@ fn main() -> Result<(), ReadFileError> {
 
     println!(
         "{}",
-        file.split(30).line_count().word_count().character_count().byte_count()
+        file.split(30)
+            .line_count()
+            .word_count()
+            .character_count()
+            .byte_count()
     );
 
     Ok(())
