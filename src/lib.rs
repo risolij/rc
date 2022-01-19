@@ -1,4 +1,5 @@
 use std::fmt;
+use std::fs;
 use std::io;
 
 #[derive(Debug)]
@@ -14,7 +15,8 @@ impl From<io::Error> for ReadFileError {
 
 #[derive(Debug)]
 pub struct ReadFile {
-    file: String,
+    filename: &'static str,
+    contents: String,
     line_count: usize,
     word_count: usize,
     character_count: usize,
@@ -22,9 +24,10 @@ pub struct ReadFile {
 }
 
 impl ReadFile {
-    pub fn new(file: String) -> Self {
+    pub fn new(filename: &'static str) -> Self {
         Self {
-            file,
+            filename: filename,
+            contents: ReadFile::contents(filename.to_string()),
             line_count: 0,
             word_count: 0,
             character_count: 0,
@@ -32,9 +35,19 @@ impl ReadFile {
         }
     }
 
+    pub fn contents(file: String) -> String {
+        match fs::read_to_string(file) {
+            Ok(file) => file,
+            Err(e) => {
+                println!("uh oh: {}", e);
+                std::process::exit(1);
+            }
+        }
+    }
+
     pub fn word_count(mut self) -> Self {
         self.word_count = self
-            .file
+            .contents
             .lines()
             .map(|line| line.split_whitespace().count())
             .sum();
@@ -42,26 +55,26 @@ impl ReadFile {
         self
     }
     pub fn line_count(mut self) -> Self {
-        self.line_count = self.file.lines().count();
+        self.line_count = self.contents.lines().count();
 
         self
     }
 
     pub fn byte_count(mut self) -> Self {
-        self.byte_count = self.file.as_bytes().len();
+        self.byte_count = self.contents.as_bytes().len();
         self
     }
 
     pub fn character_count(mut self) -> Self {
-        self.character_count = self.file.chars().count();
+        self.character_count = self.contents.chars().count();
 
         self
     }
 
     pub fn split(mut self, value: usize) -> Self {
-        self.file = format!(
+        self.contents = format!(
             "{}{}",
-            self.file
+            self.contents
                 .lines()
                 .take(value)
                 .collect::<Vec<&str>>()
@@ -76,8 +89,8 @@ impl fmt::Display for ReadFile {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
-            "Line Count: {}\nWord Count: {}\nCharacter Count: {}\nByte Count: {}",
-            self.line_count, self.word_count, self.character_count, self.byte_count
+            "File: {}\nLine Count: {}\nWord Count: {}\nCharacter Count: {}\nByte Count: {}",
+            self.filename, self.line_count, self.word_count, self.character_count, self.byte_count
         )
     }
 }
@@ -87,11 +100,11 @@ mod tests {
     use super::*;
     #[test]
     fn counts() {
-        let file = ReadFile::new(std::fs::read_to_string("flake.nix").unwrap());
+        let file = ReadFile::new("flake.nix");
         let test = file.line_count().word_count().character_count();
         let v = vec![test.line_count, test.word_count, test.character_count];
 
-        let file2 = ReadFile::new(std::fs::read_to_string("flake.nix").unwrap());
+        let file2 = ReadFile::new("flake.nix");
         let test2 = file2.split(30).line_count().word_count().character_count();
         let v2 = vec![test2.line_count, test2.word_count, test2.character_count];
 
