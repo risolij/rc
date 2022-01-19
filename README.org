@@ -1,27 +1,27 @@
 * rc
-Attempt to reimplement another coreutil =wc= for practice
+A counting library that operates on files. 
 
-** Word count for =wc=
+** =wc= counts
 #+begin_src sh
-wc -w flake.nix
-85 flake.nix
+wc flake.nix
 #+end_src
 
-** Line count for =wc=
+#+begin_example
+40  85 964 flake.nix
+#+end_example
+
+** =rc= counts
 #+begin_src sh
-wc -l flake.nix
-40 flake.nix
+cargo run
 #+end_src
 
-** Word && line && character count for =rc=
-#+begin_src sh
-cargo run -- flake.nix
-
-Line Count: 40
-Word Count: 85
-Character Count: 964
-#+end_src
-
+#+begin_example
+File: flake.nix
+Line Count: 30
+Word Count: 70
+Character Count: 746
+Byte Count: 746
+#+end_example
 ** Unit test
 #+begin_example
 running 1 test
