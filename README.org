@@ -1,5 +1,17 @@
 * rc
 A counting library that operates on files. 
+#+begin_src rust
+pub fn main() {
+    let file = ReadFile::new("flake.nix");
+    println!("{}",
+        file
+        .split(20)
+        .line_count()
+        .word_count()
+        .character_count()
+        .byte_count());
+}
+#+end_src
 
 ** =wc= counts
 #+begin_src sh
