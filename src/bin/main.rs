@@ -1,7 +1,6 @@
+use rc::{ReadFile, ReadFileError};
 use std::env;
 use std::fs;
-use rc::{ReadFile, ReadFileError};
-
 
 fn main() -> Result<(), ReadFileError> {
     let file = argument_handling();
@@ -10,7 +9,6 @@ fn main() -> Result<(), ReadFileError> {
 
     Ok(())
 }
-
 
 fn argument_handling() -> ReadFile {
     let args: Vec<String> = env::args().collect();

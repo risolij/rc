@@ -1,5 +1,5 @@
-use std::io;
 use std::fmt;
+use std::io;
 
 #[derive(Debug)]
 pub enum ReadFileError {
@@ -47,10 +47,7 @@ impl ReadFile {
     }
 
     pub fn character_count(mut self) -> Self {
-        self.character_count = self
-            .file
-            .chars()
-            .count();
+        self.character_count = self.file.chars().count();
 
         self
     }
@@ -65,7 +62,6 @@ impl fmt::Display for ReadFile {
         )
     }
 }
-
 
 #[cfg(test)]
 mod tests {
