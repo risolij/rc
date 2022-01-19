@@ -26,7 +26,7 @@ pub struct ReadFile {
 impl ReadFile {
     pub fn new(filename: &'static str) -> Self {
         Self {
-            filename: filename,
+            filename,
             contents: ReadFile::contents(filename.to_string()),
             line_count: 0,
             word_count: 0,
