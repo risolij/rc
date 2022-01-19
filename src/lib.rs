@@ -35,9 +35,9 @@ impl ReadFile {
         }
     }
 
-    pub fn contents(file: String) -> String {
-        match fs::read_to_string(file) {
-            Ok(file) => file,
+    pub fn contents(filename: String) -> String {
+        match fs::read_to_string(filename) {
+            Ok(contents) => contents,
             Err(e) => {
                 println!("uh oh: {}", e);
                 std::process::exit(1);
