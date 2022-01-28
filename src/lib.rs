@@ -15,8 +15,7 @@ impl From<io::Error> for ReadFileError {
 
 #[derive(Debug)]
 pub struct ReadFile {
-    filename: &'static str,
-    contents: String,
+    filename: &'static str, contents: String,
     line_count: usize,
     word_count: usize,
     character_count: usize,
@@ -99,16 +98,39 @@ impl fmt::Display for ReadFile {
 mod tests {
     use super::*;
     #[test]
-    fn counts() {
+    fn word_count() {
         let file = ReadFile::new("flake.nix");
-        let test = file.line_count().word_count().character_count();
-        let v = vec![test.line_count, test.word_count, test.character_count];
+        let test = file.word_count();
+        let v = test.word_count;
 
-        let file2 = ReadFile::new("flake.nix");
-        let test2 = file2.split(30).line_count().word_count().character_count();
-        let v2 = vec![test2.line_count, test2.word_count, test2.character_count];
 
-        assert_eq!(vec![40, 85, 964], v);
-        assert_eq!(vec![30, 70, 746], v2);
+        assert_eq!(85, v);
+    }
+
+    #[test]
+    fn line_count() {
+        let file = ReadFile::new("flake.nix");
+        let test = file.split(30).line_count();
+        let v = test.line_count;
+
+        assert_eq!(30, v);
+    }
+
+    #[test]
+    fn character_count() {
+        let file = ReadFile::new("flake.nix");
+        let test = file.split(30).character_count();
+        let v = test.character_count;
+
+        assert_eq!(746, v);
+    }
+
+    #[test]
+    fn byte_count() {
+        let file = ReadFile::new("flake.nix");
+        let test = file.split(30).byte_count();
+        let v = test.byte_count;
+
+        assert_eq!(746, v);
     }
 }
