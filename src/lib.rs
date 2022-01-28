@@ -15,7 +15,8 @@ impl From<io::Error> for ReadFileError {
 
 #[derive(Debug)]
 pub struct ReadFile {
-    filename: &'static str, contents: String,
+    filename: &'static str,
+    contents: String,
     line_count: usize,
     word_count: usize,
     character_count: usize,
@@ -102,7 +103,6 @@ mod tests {
         let file = ReadFile::new("flake.nix");
         let test = file.word_count();
         let v = test.word_count;
-
 
         assert_eq!(85, v);
     }
