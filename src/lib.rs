@@ -1,6 +1,4 @@
-use std::fmt;
-use std::fs;
-use std::io;
+use std::{fmt, fs, io};
 
 #[derive(Debug)]
 pub enum ReadFileError {
