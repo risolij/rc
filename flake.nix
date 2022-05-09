@@ -24,12 +24,9 @@
         devShell = mkShell {
           buildInputs = [
             pkg-config
-            jq
-            bat
             gcc
             openssl
-            tree
-            exa
+            rust-analyzer
             (rust-bin.selectLatestNightlyWith (toolchain: toolchain.default.override {
               extensions = ["rust-src"];
             }))
