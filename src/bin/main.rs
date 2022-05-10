@@ -1,16 +1,14 @@
-use rc::{ReadFile, ReadFileError};
+use rc::{Rc, RcBuilder};
 
-fn main() -> Result<(), ReadFileError> {
-    let file = ReadFile::new("flake.nix");
+fn main() -> Result<(), std::io::Error> {
+    let file = RcBuilder::new("flake.nix")
+        .with_line_count()
+        .with_word_count()
+        .with_character_count()
+        .with_byte_count()
+        .build();
 
-    println!(
-        "{}",
-        file.split(30)
-            .line_count()
-            .word_count()
-            .character_count()
-            .byte_count()
-    );
+    println!("{}", file);
 
     Ok(())
 }

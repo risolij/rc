@@ -1,18 +1,69 @@
-use std::{fmt, fs, io};
+use std::{fmt, fs};
 
-#[derive(Debug)]
-pub enum ReadFileError {
-    ReadFileParse(io::Error),
+pub struct RcBuilder {
+    filename: &'static str,
+    contents: String,
+    line_count: Option<usize>,
+    word_count: Option<usize>,
+    character_count: Option<usize>,
+    byte_count: Option<usize>
 }
 
-impl From<io::Error> for ReadFileError {
-    fn from(e: io::Error) -> ReadFileError {
-        ReadFileError::ReadFileParse(e)
+impl RcBuilder {
+    pub fn new(filename: &'static str) -> Self {
+        Self {
+            filename,
+            contents: fs::read_to_string(filename).unwrap_or_default(),
+            line_count: None,
+            word_count: None,
+            character_count: None,
+            byte_count: None,
+        }
+    }
+
+    pub fn with_line_count(mut self) -> Self {
+        self.line_count = Some(self.contents.lines().count());
+
+        self
+    }
+
+    pub fn with_word_count(mut self) -> Self {
+        self.word_count = Some(self
+            .contents
+            .lines()
+            .map(|line| line.split_whitespace().count())
+            .sum());
+
+        self
+    }
+
+    pub fn with_character_count(mut self) -> Self {
+        self.character_count = Some(self.contents.chars().count());
+
+        self
+    }
+
+    pub fn with_byte_count(mut self) -> Self {
+        self.byte_count = Some(self.contents.as_bytes().len());
+
+        self
+    }
+
+    pub fn build(&self) -> Rc {
+        Rc {
+            filename: self.filename,
+            contents: self.contents.clone(),
+            line_count: self.line_count.unwrap_or_default(),
+            word_count: self.word_count.unwrap_or_default(),
+            character_count: self.character_count.unwrap_or_default(),
+            byte_count: self.byte_count.unwrap_or_default(),
+
+        }
     }
 }
 
 #[derive(Debug)]
-pub struct ReadFile {
+pub struct Rc {
     filename: &'static str,
     contents: String,
     line_count: usize,
@@ -21,69 +72,7 @@ pub struct ReadFile {
     byte_count: usize,
 }
 
-impl ReadFile {
-    pub fn new(filename: &'static str) -> Self {
-        Self {
-            filename,
-            contents: ReadFile::contents(filename.to_string()),
-            line_count: 0,
-            word_count: 0,
-            character_count: 0,
-            byte_count: 0,
-        }
-    }
-
-    pub fn contents(filename: String) -> String {
-        match fs::read_to_string(filename) {
-            Ok(contents) => contents,
-            Err(e) => {
-                println!("uh oh: {}", e);
-                std::process::exit(1);
-            }
-        }
-    }
-
-    pub fn word_count(mut self) -> Self {
-        self.word_count = self
-            .contents
-            .lines()
-            .map(|line| line.split_whitespace().count())
-            .sum();
-
-        self
-    }
-    pub fn line_count(mut self) -> Self {
-        self.line_count = self.contents.lines().count();
-
-        self
-    }
-
-    pub fn byte_count(mut self) -> Self {
-        self.byte_count = self.contents.as_bytes().len();
-        self
-    }
-
-    pub fn character_count(mut self) -> Self {
-        self.character_count = self.contents.chars().count();
-
-        self
-    }
-
-    pub fn split(mut self, value: usize) -> Self {
-        self.contents = format!(
-            "{}{}",
-            self.contents
-                .lines()
-                .take(value)
-                .collect::<Vec<&str>>()
-                .join("\n"),
-            '\n'
-        );
-        self
-    }
-}
-
-impl fmt::Display for ReadFile {
+impl fmt::Display for Rc {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
@@ -97,38 +86,25 @@ impl fmt::Display for ReadFile {
 mod tests {
     use super::*;
     #[test]
-    fn word_count() {
-        let file = ReadFile::new("flake.nix");
-        let test = file.word_count();
-        let v = test.word_count;
+    fn can_display() {
+        let file = RcBuilder::new("flake.nix")
+            .with_line_count()
+            .with_word_count()
+            .with_character_count()
+            .with_byte_count()
+            .build();
 
-        assert_eq!(85, v);
+
+        assert_eq!(format!("{}", file), "File: flake.nix\nLine Count: 37\nWord Count: 82\nCharacter Count: 926\nByte Count: 926");
     }
 
     #[test]
-    fn line_count() {
-        let file = ReadFile::new("flake.nix");
-        let test = file.split(30).line_count();
-        let v = test.line_count;
+    fn has_proper_line_count() {
+        let file = RcBuilder::new("flake.nix")
+            .with_line_count()
+            .build();
 
-        assert_eq!(30, v);
+        assert_eq!(37, file.line_count);
     }
 
-    #[test]
-    fn character_count() {
-        let file = ReadFile::new("flake.nix");
-        let test = file.split(30).character_count();
-        let v = test.character_count;
-
-        assert_eq!(746, v);
-    }
-
-    #[test]
-    fn byte_count() {
-        let file = ReadFile::new("flake.nix");
-        let test = file.split(30).byte_count();
-        let v = test.byte_count;
-
-        assert_eq!(746, v);
-    }
 }
