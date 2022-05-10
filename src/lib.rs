@@ -6,7 +6,7 @@ pub struct RcBuilder {
     line_count: Option<usize>,
     word_count: Option<usize>,
     character_count: Option<usize>,
-    byte_count: Option<usize>
+    byte_count: Option<usize>,
 }
 
 impl RcBuilder {
@@ -17,11 +17,12 @@ impl RcBuilder {
     }
 
     pub fn with_word_count(&mut self) -> &mut Self {
-        self.word_count = Some(self
-            .contents
-            .lines()
-            .map(|line| line.split_whitespace().count())
-            .sum());
+        self.word_count = Some(
+            self.contents
+                .lines()
+                .map(|line| line.split_whitespace().count())
+                .sum(),
+        );
 
         self
     }
@@ -46,7 +47,6 @@ impl RcBuilder {
             word_count: self.word_count.unwrap_or_default(),
             character_count: self.character_count.unwrap_or_default(),
             byte_count: self.byte_count.unwrap_or_default(),
-
         }
     }
 }
@@ -100,17 +100,13 @@ mod tests {
             .with_byte_count()
             .build();
 
-
         assert_eq!(format!("{}", file), "File: flake.nix\nLine Count: 37\nWord Count: 82\nCharacter Count: 926\nByte Count: 926");
     }
 
     #[test]
     fn has_proper_line_count() {
-        let file = Rc::new("flake.nix")
-            .with_line_count()
-            .build();
+        let file = Rc::new("flake.nix").with_line_count().build();
 
         assert_eq!(37, file.line_count);
     }
-
 }
