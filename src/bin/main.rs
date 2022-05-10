@@ -1,14 +1,15 @@
-use rc::{Rc, RcBuilder};
+use rc::Rc;
 
 fn main() -> Result<(), std::io::Error> {
-    let file = RcBuilder::new("flake.nix")
+    let file: Rc = Rc::new("flake.nix")
         .with_line_count()
         .with_word_count()
         .with_character_count()
         .with_byte_count()
         .build();
 
-    println!("{}", file);
+
+    file.show_contents();
 
     Ok(())
 }

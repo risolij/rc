@@ -10,24 +10,13 @@ pub struct RcBuilder {
 }
 
 impl RcBuilder {
-    pub fn new(filename: &'static str) -> Self {
-        Self {
-            filename,
-            contents: fs::read_to_string(filename).unwrap_or_default(),
-            line_count: None,
-            word_count: None,
-            character_count: None,
-            byte_count: None,
-        }
-    }
-
-    pub fn with_line_count(mut self) -> Self {
+    pub fn with_line_count(&mut self) -> &mut Self {
         self.line_count = Some(self.contents.lines().count());
 
         self
     }
 
-    pub fn with_word_count(mut self) -> Self {
+    pub fn with_word_count(&mut self) -> &mut Self {
         self.word_count = Some(self
             .contents
             .lines()
@@ -37,13 +26,13 @@ impl RcBuilder {
         self
     }
 
-    pub fn with_character_count(mut self) -> Self {
+    pub fn with_character_count(&mut self) -> &mut Self {
         self.character_count = Some(self.contents.chars().count());
 
         self
     }
 
-    pub fn with_byte_count(mut self) -> Self {
+    pub fn with_byte_count(&mut self) -> &mut Self {
         self.byte_count = Some(self.contents.as_bytes().len());
 
         self
@@ -72,6 +61,23 @@ pub struct Rc {
     byte_count: usize,
 }
 
+impl Rc {
+    pub fn new(filename: &'static str) -> RcBuilder {
+        RcBuilder {
+            filename,
+            contents: fs::read_to_string(filename).unwrap_or_default(),
+            line_count: None,
+            word_count: None,
+            character_count: None,
+            byte_count: None,
+        }
+    }
+
+    pub fn show_contents(&self) {
+        println!("{}", self.contents);
+    }
+}
+
 impl fmt::Display for Rc {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
@@ -87,7 +93,7 @@ mod tests {
     use super::*;
     #[test]
     fn can_display() {
-        let file = RcBuilder::new("flake.nix")
+        let file = Rc::new("flake.nix")
             .with_line_count()
             .with_word_count()
             .with_character_count()
@@ -100,7 +106,7 @@ mod tests {
 
     #[test]
     fn has_proper_line_count() {
-        let file = RcBuilder::new("flake.nix")
+        let file = Rc::new("flake.nix")
             .with_line_count()
             .build();
 
