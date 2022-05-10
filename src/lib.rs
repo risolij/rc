@@ -1,3 +1,5 @@
+#![feature(iter_intersperse)]
+
 use std::{fmt, fs};
 
 pub struct RcBuilder {
@@ -71,6 +73,23 @@ impl Rc {
             character_count: None,
             byte_count: None,
         }
+    }
+
+    pub fn head(&self, lines: usize) -> String {
+        self.contents
+            .lines()
+            .take(lines)
+            .intersperse("\n")
+            .collect::<String>()
+    }
+
+    pub fn tail(&self, lines: usize) -> String {
+        self.contents
+            .lines()
+            .rev()
+            .take(lines)
+            .intersperse("\n")
+            .collect::<String>()
     }
 
     pub fn show_contents(&self) {

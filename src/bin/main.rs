@@ -9,7 +9,9 @@ fn main() -> Result<(), std::io::Error> {
         .build();
 
 
-    println!("{}", file);
+
+    println!("{}", file.head(10));
+    println!("{}", file.tail(10));
 
     Ok(())
 }
