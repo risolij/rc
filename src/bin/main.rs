@@ -9,7 +9,7 @@ fn main() -> Result<(), std::io::Error> {
         .build();
 
 
-    file.show_contents();
+    println!("{}", file);
 
     Ok(())
 }
